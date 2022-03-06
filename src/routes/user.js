@@ -4,7 +4,7 @@ const express= require('express');
 const userSchema = require('../models/user');
 
 const router = express.Router();
-
+  
 //CreateUser
 router.post('/users',(req,res)=>{
     // res.send('ruta de createUser');
