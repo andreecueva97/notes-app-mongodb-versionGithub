@@ -17,26 +17,39 @@ Content-Type: application/json
     "genero":"femenino"
 }
 ###
-GET http://localhost:9000/api/users HTTP/1.1
-
-###
-GET http://localhost:9000/api/users/2 HTTP/1.1
-
-###
-PUT http://localhost:9000/api/users/2 HTTP/1.1
+POST https://backend-testmandados.herokuapp.com/api/users HTTP/1.1
 Content-Type: application/json
 
 {
     "id":2,
     "name":"victorias",
-    "edad":"26",
+    "edad":"18",
     "telefono":"12434332422423432",
     "educacion":"secundaria",
     "estadoCivil":"casada",
     "genero":"femenino"
 }
 ###
-DELETE  http://localhost:9000/api/users/2 HTTP/1.1
+GET http://localhost:9000/api/users HTTP/1.1
+
+###
+GET http://localhost:9000/api/users/2 HTTP/1.1
+
+###
+PUT https://backend-testmandados.herokuapp.com/api/users/4 HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":44,
+    "name":"victorias",
+    "edad":"40",
+    "telefono":"12434332422423432",
+    "educacion":"secundaria",
+    "estadoCivil":"casada",
+    "genero":"femenino"
+}
+###
+DELETE  https://backend-testmandados.herokuapp.com/api/users/6 HTTP/1.1
 
 ### request juego###################################################juego#
 ###
