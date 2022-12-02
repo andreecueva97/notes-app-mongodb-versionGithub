@@ -1,5 +1,5 @@
 ###
-POST http://localhost:9000/api/users HTTP/1.1
+GET http://localhost:9000/api/solicitudes HTTP/1.1
 Content-Type: application/json
 
 {}
@@ -10,27 +10,47 @@ Content-Type: application/json
 {
     "id":1,
     "name":"victoria",
-    "edad":"18",
+    "apellido":"casas",
+    "direccion":"home sweet",
     "telefono":"12434332422423432",
-    "educacion":"secundaria",
-    "estadoCivil":"casada",
-    "genero":"femenino"
+    "email":"secundaria@gmail.com",
+    "contrasena":"casada"
 }
 ###
-POST https://backend-testmandados.herokuapp.com/api/users HTTP/1.1
+POST http://localhost:9000/api/users HTTP/1.1
 Content-Type: application/json
 
 {
     "id":2,
     "name":"victorias",
-    "edad":"18",
-    "telefono":"12434332422423432",
-    "educacion":"secundaria",
-    "estadoCivil":"casada",
-    "genero":"femenino"
+    "apellido":"casass",
+    "direccion":"home sweet2",
+    "telefono":"124343324224234322",
+    "email":"secundaria2@gmail.com",
+    "contrasena":"casada2"
+}
+###
+POST https://backend-dogsapp.herokuapp.com/api/users/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":11,
+    "name":"jose",
+    "apellido":"casass",
+    "direccion":"home sweet2",
+    "telefono":"124343324224234322",
+    "email":"josefina@gmail.com",
+    "contrasena":"casada2"
 }
 ###
 GET http://localhost:9000/api/users HTTP/1.1
+
+###
+GET https://backend-testmandados.herokuapp.com/api/users HTTP/1.1
+###
+GET https://backend-dogsapp.herokuapp.com/api/solicitudes HTTP/1.1
+###
+GET https://backend-dogsapp.herokuapp.com/api/users HTTP/1.1
 
 ###
 GET http://localhost:9000/api/users/2 HTTP/1.1
@@ -53,12 +73,12 @@ DELETE  https://backend-testmandados.herokuapp.com/api/users/6 HTTP/1.1
 
 ### request juego###################################################juego#
 ###
-POST http://localhost:9000/api/juegos HTTP/1.1
+POST http://localhost:9000/api/solicitud HTTP/1.1
 Content-Type: application/json
 
 {}
 ###
-POST http://localhost:9000/api/juegos HTTP/1.1
+POST http://localhost:9000/api/solicitud HTTP/1.1
 Content-Type: application/json
 
 {
@@ -78,17 +98,17 @@ Content-Type: application/json
     "posicionesNumericas":[1,2,3,4]
 }
 ###
-GET http://localhost:9000/api/juegos HTTP/1.1
+GET http://localhost:9000/api/solicitud HTTP/1.1
 
 ###
-GET http://localhost:9000/api/juegos/2 HTTP/1.1
+GET http://localhost:9000/api/solicitud/2 HTTP/1.1
 
 ###
-PUT http://localhost:9000/api/juegos/2 HTTP/1.1
+PUT https://backend-dogsapp.herokuapp.com/api/solicitud/8 HTTP/1.1
 Content-Type: application/json
 
 {
-    "id":2,
+    "id":8,
     "tipo":28,
     "user":{
         "id":2,
@@ -104,4 +124,351 @@ Content-Type: application/json
     "posicionesNumericas":[]
 }
 ###
-DELETE  http://localhost:9000/api/juegos/2 HTTP/1.1
+DELETE  http://localhost:9000/api/users/2 HTTP/1.1
+
+###
+DELETE  https://backend-dogsapp.herokuapp.com/api/users/2 HTTP/1.1
+
+###
+
+POST  https://backend-dogsapp.herokuapp.com/delete
+Content-Type: application/json
+
+{
+
+"file": "foto1.jpg"
+
+}
+
+
+###
+
+GET  https://backend-dogsapp.herokuapp.com/api/fotos/uploads HTTP/1.1
+
+###
+POST  https://backend-dogsapp.herokuapp.com/fotos/delete HTTP/1.1
+Content-Type: application/json
+
+{
+
+}
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":1,
+    "name":"a",
+    "color":"black",
+    "raza":"mestizo",
+    "estado":"adoptar",
+    "estadoDogSituacion":-1,
+    "imagen":["a1.jpg","a2.jpg","a3.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo",
+    "comentarios":["adopten"],
+    "id_user":0
+}
+//"id_user":0//indica quien se va a ser cargo del perro(0=sin asignar)
+//"estado":"adoptar",//adoptar transitar perdido encontrado
+//"estadoDogSituacion":-1, //pendiente de ser aceptado por ADMIN para publicarlo
+###
+GET https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+###
+POST https://backend-dogsapp.herokuapp.com/api/users/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":11,
+    "name":"jose",
+    "apellido":"casass",
+    "direccion":"home sweet2",
+    "telefono":"124343324224234322",
+    "email":"josefina@gmail.com",
+    "contrasena":"casada2"
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":2,
+    "name":"b",
+    "color":"black1",
+    "raza":"mestizo1",
+    "estado":"adoptar",
+    "estadoDogSituacion":-1,
+    "imagen":["b1.jpg","b2.jpg","b3.jpg","b4.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo",
+    "comentarios":["adopten1"],
+    "id_user":0
+}
+
+
+###
+DELETE  https://backend-dogsapp.herokuapp.com/api/dogs/1 HTTP/1.1
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":3,
+    "name":"c",
+    "color":"black3",
+    "raza":"mestizo3",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["c1.jpg","c2.jpg","c3.jpg","c4.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo",
+    "comentarios":["adopten1"],
+    "id_user":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":4,
+    "name":"d",
+    "color":"black4",
+    "raza":"mestizo4",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["d1.jpg","d2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo",
+    "comentarios":["adopten1"],
+    "id_user":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":5,
+    "name":"e",
+    "color":"white1",
+    "raza":"mestizo5",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["e1.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 5",
+    "comentarios":["adopten5"],
+    "id_user":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":6,
+    "name":"f",
+    "color":"white2",
+    "raza":"mestizo6",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["f1.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 5",
+    "comentarios":["adopten6"],
+    "id_user":0
+}
+
+
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":7,
+    "name":"g",
+    "color":"white3",
+    "raza":"mestizo7",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["g1.jpg","g2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 7",
+    "comentarios":["adopten7"],
+    "id_user":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":8,
+    "name":"h",
+    "color":"white4",
+    "raza":"mestizo8",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["h1.jpg","h2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 8",
+    "comentarios":["adopten8"],
+    "id_user":0
+}
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":9,
+    "name":"i",
+    "color":"white5",
+    "raza":"mestizo9",
+    "estado":"adoptar",
+    "estadoDogSituacion":0,
+    "imagen":["i1.jpg","i2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 9",
+    "comentarios":["adopten9"],
+    "id_user":0
+}
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":10,
+    "name":"j",
+    "color":"brown1",
+    "raza":"mestizo10",
+    "estado":"transitar",
+    "estadoDogSituacion":0,
+    "imagen":["j1.jpg","j2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 10",
+    "comentarios":["adopten7"],
+    "id_user":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":11,
+    "name":"k",
+    "color":"brown4",
+    "raza":"mestizo8",
+    "estado":"transitar",
+    "estadoDogSituacion":0,
+    "imagen":["k1.jpg","k2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 8",
+    "comentarios":["adopten8"],
+    "id_user":0
+}
+###
+POST https://backend-dogsapp.herokuapp.com/api/dogs/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":12,
+    "name":"l",
+    "color":"brown5",
+    "raza":"mestizo9",
+    "estado":"transitar",
+    "estadoDogSituacion":0,
+    "imagen":["l1.jpg","l2.jpg"],
+    "informacion":"adopte este mestizo se porta bien y es tranquilo 9",
+    "comentarios":["adopten9"],
+    "id_user":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/solicitudes/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":6,
+    "id_dog":0,
+    "id_user":8,
+    "comentarios":["quiero dar frazadas como me contacto"],
+    "tipo":"donacion",
+    "estadoSolicitud":0
+}
+
+###
+POST https://backend-dogsapp.herokuapp.com/api/users/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":9,
+    "name":"admin",
+    "apellido":"admin",
+    "direccion":"admin",
+    "telefono":"000000000000",
+    "email":"admin@gmail.com",
+    "contrasena":"admin"
+}
+
+###
+PUT https://backend-dogsapp.herokuapp.com/api/solicitudes/8 HTTP/1.1
+Content-Type: application/json
+
+{
+    "id":8,
+    "id_dog":0,
+    "id_user":8,
+    "comentarios":["quiero dar frazadas como me contacto"],
+    "tipo":"donacion",
+    "estadoSolicitud":1
+}
+
+###
+PUT https://backend-dogsapp.herokuapp.com/api/dogs/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "name":"d",
+}
+
+###
+POST  https://backend-dogsapp.herokuapp.com/api/fotos/delete
+Content-Type: application/json
+
+{
+
+"file": "foto1.jpg",
+"UserID": "123123123123"
+
+}
+### --------------------------------------------foto delete --->ok
+POST  http://localhost:9000/api/fotos/delete
+Content-Type: application/json
+
+{
+
+"file": "foto1.jpg",
+"UserID": "001"
+
+}
+
+###--------------------------------------------foto download --->ok
+GET  http://localhost:9000/api/fotos/download/foto1.jpg
+Content-Type: application/json
+
+{
+
+"file": "foto1.jpg"
+
+}
+###--------------------------------------------foto uploads --->ok
+GET  http://localhost:9000/api/fotos/uploads
+
+###--------------------------------------------foto single  --->ok
+POST  http://localhost:9000/api/fotos/single
+
+Content-Type: multipart/form-data
+
+{
+"image":{"uri": "foto1.jpg", "name": "photo.jpg","filename" :"imageTest45.jpg","type": "image/jpeg"},
+"user_id": "001",
+"user_dog": "001",
+"fotocategoria": "foto perro",
+
+}
+###
+DELETE  http://localhost:9000/api/users/2 HTTP/1.1
