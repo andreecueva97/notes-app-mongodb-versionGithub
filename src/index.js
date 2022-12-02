@@ -8,11 +8,15 @@ const app = express();
 const port = process.env.PORT ||9000;
 
 const userRoutes = require('./routes/user');
-const juegoRoutes = require('./routes/juego');
+const dogRoutes = require('./routes/dog');
+const solicitudRoutes = require('./routes/solicitud');
+const fotoRoutes = require('./routes/foto');
 //middleware
 app.use(express.json());
 app.use('/api',userRoutes);
-app.use('/api',juegoRoutes);
+app.use('/api',dogRoutes);
+app.use('/api',solicitudRoutes);
+app.use('/api',fotoRoutes);
 
 //routes
 app.get('/',(req,res)=>{
