@@ -2824,8 +2824,183 @@ plt.show()
     <th>Company 10 ML</th>
     
   </tr>		 
-		  
-		  
+practica 10
+<td><pre>
+
+
+
+
+<h4> red neuronal o neural network</h4>
+
+
+
+
+
+
+
+
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
+import pandas as pd
+
+
+
+
+
+
+
+
+
+
+
+
+df = pd.read_csv('churn_cleaned.csv')
+df
+
+
+
+
+
+
+
+
+
+
+df.isnull().sum()
+
+
+
+
+
+
+
+
+
+
+
+y = df['Exited']
+y
+
+
+
+
+
+
+
+
+
+
+X = df.drop(['Exited'], axis=1)
+X
+
+
+
+
+
+
+
+
+
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+
+
+
+
+
+
+
+
+
+
+nn = MLPClassifier(
+    hidden_layer_sizes=(2,2,2),
+    activation = 'logistic',
+    max_iter=10000
+).fit(x_train, y_train)
+
+
+
+
+
+
+
+
+
+
+y_pred = nn.predict(x_test)
+
+
+
+
+
+
+
+
+
+
+confusion_mat = confusion_matrix(y_test,y_pred)
+confusion_mat
+
+
+
+
+
+
+
+
+
+
+accuracy = accuracy_score(y_test,y_pred)
+accuracy
+
+
+
+
+
+
+y_pp = nn.predict_proba(x_test)
+y_pp
+
+
+
+
+
+
+
+nn.coefs_
+
+
+
+
+
+
+
+
+
+
+y_preds = []
+for i in y_pp:
+    if i[1] > 0.8:
+        y_preds.append(1)
+    else:
+        y_preds.append(0)
+y_preds
+
+
+
+
+
+
+
+
+
+</pre></td>		  
+<tr>
+    <th>Company 11   RESUMEN GENERAL - ALGORITMOS</th>
+    
+  </tr>	  
 		  
 		  
 		  
