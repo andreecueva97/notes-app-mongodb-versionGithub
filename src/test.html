@@ -937,7 +937,7 @@ r2_variation(vars_size, r2_adj, 'Backward Stepwise Selection with p-values', 'k'
 
 
 
-<td></pre>
+</pre></td>
   <tr>
     <th>Company 3 ML</th>
     
@@ -1540,12 +1540,306 @@ plt.show()
 
 
 
-</td></pre>
+</pre></td>
 
   <tr>
     <th>Company 5 ML</th>
     
   </tr>
+	
+<td><pre>
+
+
+<h4>Cross Validation</h4>
+
+
+ armado de Datasets de Test/Train y 
+exploraremos las tecnicas de Cross Validation
+
+
+
+
+
+
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+
+
+
+
+
+
+
+
+#Traemos el dataset de Boston y armaremos nuestro modelo con todas las variables
+boston = pd.read_csv('boston.csv')
+boston.head()
+
+
+
+
+
+
+
+
+
+
+X = boston['LSTAT']
+y = boston['MEDV']
+X
+
+
+
+
+
+
+
+# Forma 1 de hacerlo
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Forma 2 de hacerlo
+'''
+df = boston[['LSTAT', 'MEDV']]
+train = df.sample(frac=0.8,random_state=200) #random state is a seed value
+test = df.drop(train.index)
+X_train = train['LSTAT']
+y_train = train['MEDV']
+X_test = test['LSTAT']
+y_test = test['MEDV']
+'''
+
+
+
+
+
+
+
+print('Size of dataset:',len(boston),'| Size of Train:',X_train.size,'| Size of Test:',X_test.size)
+
+
+
+
+
+
+
+#print('Size of dataset:',len(boston),'| Size of Train:',len(train),'| Size of Test:',len(test))
+
+
+
+
+
+
+
+
+print("Train: ", X_train,"\nTest: ", X_test)
+
+
+
+
+
+
+
+
+
+
+# armamos los dataset de training y test en proporcion 80-20
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, random_state = 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>K-Fold Cross Validation</h5>
+
+<p>Modelo 1 : Y = B1 * X1</p>
+
+<p>Modelo 2 : Y = B2 * X2</p>
+
+<p>Modelo 3 : Y = B1 * X1 + B2 * X2</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mse = {}
+
+
+
+
+
+
+<h2>MODELO 1 k fold cross validation</h2>
+
+
+
+
+
+
+import sklearn
+from sklearn import linear_model
+from sklearn.model_selection import cross_val_score
+boston = pd.read_csv('boston.csv')
+
+
+
+
+
+
+
+X = boston[['LSTAT']]
+y = boston[['MEDV']]
+
+
+
+
+
+
+
+
+model_1 = linear_model.LinearRegression()
+scores = cross_val_score(model_1, X, y, cv=5, scoring='neg_mean_squared_error')
+abs(scores)
+
+
+
+
+
+
+
+
+¿ Por que neg MSE ? https://stackoverflow.com/questions/48244219/is-sklearn-metrics-mean-squared-error-the-larger-the-better-negated
+
+
+
+
+
+
+mse['model1'] = abs(scores.mean())
+
+
+
+
+
+
+
+<h2>MODELO 2 k fold cross validation</h2>
+
+
+
+
+
+
+X = boston[['RM']]
+y = boston[['MEDV']]
+
+
+
+
+
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+
+
+
+
+
+
+
+model_2 = linear_model.LinearRegression().fit(X_train, y_train)
+scores = cross_val_score(model_2, X, y, cv=5, scoring='neg_mean_squared_error')
+abs(scores)
+
+
+
+
+
+
+
+
+mse['model2'] = abs(scores.mean())
+
+
+
+
+
+
+
+
+
+
+<h2>MODELO 3 k fold cross validation</h2>
+
+
+
+
+
+
+
+
+X = boston[['RM', 'LSTAT']]
+y = boston[['MEDV']]
+
+
+
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+
+
+
+
+
+model_3 = linear_model.LinearRegression().fit(X_train, y_train)
+scores = cross_val_score(model_3, X, y, cv=5, scoring='neg_mean_squared_error')
+abs(scores)
+
+
+
+
+
+
+mse['model3'] = abs(scores.mean())
+
+
+
+
+mse
+
+
+
+
+</pre></td>
   <tr>
     <th>Company 6 ML</th>
     
