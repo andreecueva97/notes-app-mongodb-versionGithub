@@ -124,7 +124,7 @@ tr:nth-child(even) {
       <div align="justify"></div>
 	  <table width="2000">
   <tr>
-    <th>Company 1 ML</th>
+    <th>Company 0 ML</th>
     
   </tr>
   <tr>
@@ -298,10 +298,309 @@ def replace_value(array):
 		  </pre></td>
    
   </tr>
+  
   <tr>
     <td></td>
     
   </tr>
+<tr>
+    <th>Company 1 ML</th>
+    <td><pre>
+
+1           regresion lineal
+
+
+<h4>Regresion Lineal Simple</h4>
+
+Vamos a empezar con lo que verdaderamente nos trae a esta practica: Modelos de Regresion.
+
+Comenzaremos con un modelo de Regresion Lineal Simple. Consideraciones:
+- Trabajaremos con un Dataset que incluye datos de las propiedades de Boston
+- La libreria a usar es scikit-learn (https://jmlr.csail.mit.edu/papers/volume12/pedregosa11a/pedregosa11a.pdf)
+- Usaremos matplot para visualizar la data.
+
+
+
+#Importamos la libreria sklearn, una libreria sobre machine learning en Python. 
+#De estas librerias traemos datasets,que son datos que vienen con la libreria 
+#para fines educativos. Traeremos el modelo de regresion lineal que vamos a entrenar.
+from sklearn import datasets, linear_model
+#De la libreria sklearn.metrics traeremos aqullas formulas que nos permiten 
+#evaluar la precision de las predicciones
+from sklearn.metrics import mean_squared_error, r2_score
+
+
+
+Nuestro dataset sera un conjunto de datos sobre viviendas en Boston. (https://scikit-learn.org/stable/datasets/toy_dataset.html#boston-dataset)
+Una cosa a tener en cuenta: sklearn viene con los datasets de Boston cargados y su manipulacion para entrenar el modelo es trivial. Pero nosotros no vamos a hacer las cosas tan a alto nivel. Vamos a usar lo aprendido anteriormente para que manipulen los datos desde 0. Por ellos vamos a construir nosotros nuestro DF con panda
+
+
+
+#Antes de comenzar, recomiendo leer las referencias del dataset
+import pandas as pd
+boston = pd.read_csv('boston.csv')
+#Veamos los primeros elementos
+boston.head()
+#Nuestro dataset tiene 13 variables explicativas (CRIM, ZN, INDUS, CHAS, ..., LSTAT)
+#La variable objetivo es MEDV y significa Median value of owner-occupied homes in $1000’s
+
+
+
+
+var_explicativas = boston[['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']]
+var_explicativas.head()
+
+
+var_objetivo = boston[['MEDV']]
+var_objetivo.head()
+
+
+
+import matplotlib.pyplot as plt
+
+loop
+
+variables = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']
+for var in variables:
+    x = boston[[var]]
+    plt.scatter(x, var_objetivo)
+    plt.xlabel(var)
+    plt.ylabel("MEDV")
+    plt.show()
+	
+	
+	Entrenemos un modelo de regresion lineal simple. Nuestro objetivo es predecir el precio de una vivienda en funcion de LSTAT.
+	
+	
+	#Paso 1: Cargamos el modelo
+regr = linear_model.LinearRegression()
+
+
+
+#La variable explicativa sera la columna Rooms
+var_explicativa = boston[['RM']]
+#Paso 2: (es clave) entrenar el modelo en base a los datos fuente
+regr.fit(var_explicativa, var_objetivo)
+
+pendiente positiva tiene sentido??
+
+#Veamos cual es el beta 1 de este modelo. (la pendiente)
+beta_1 = regr.coef_
+beta_1
+
+variable independiente negatvia tiene sentido??
+
+
+beta_0 = regr.intercept_
+beta_0
+
+
+	prediccion_precios = regr.predict(var_explicativa)
+prediccion_precios
+
+
+#Grafiquemos la linea de regresion y la dispersion de datos
+plt.scatter(var_explicativa, var_objetivo)
+plt.plot(var_explicativa, prediccion_precios, 'r')
+plt.xlabel('LSTAT')
+plt.ylabel('MEDV')
+
+
+
+import numpy as np
+precio = np.transpose(var_objetivo)
+
+for index, row in var_objetivo.iterrows():
+    print(index, row)
+	
+	
+	
+	
+	#Calculemos el error cuadrado medio
+sce = 0
+for i in range(0, precio.size):
+    sce += np.power(precio[i] - prediccion_precios[i], 2)
+mse = sce / precio.size
+mse
+
+
+
+#Cuanto es el MSE o Error Cuadrado Medio
+mean_squared_error(var_objetivo, prediccion_precios)
+
+
+
+
+#Cuanto es el R2
+r2_score(var_objetivo, prediccion_precios)
+
+
+
+<h4>Regresion Lineal Multiple</h4>
+
+Ahora entrenaremos un modelo de regresion que se explique por dos variables: LSTAT y RM. Para ello utilizaremos tambien regresion lineal
+
+
+
+#En este caso elegiremos dos columnas como variables explicativas
+var_explicativa = boston[['LSTAT', 'RM', 'NOX']]
+var_explicativa.head()
+
+
+
+ax = plt.figure().add_subplot(projection='3d')
+ax.scatter(boston['LSTAT'], boston['RM'], boston['MEDV'])
+ax.set_xlabel('LSTAT')
+ax.set_ylabel('ROOMS')
+ax.set_zlabel('MEDV')
+
+
+#Entrenamos el modelo, la var_objetivo sigue siendo MEDV (declarada previamente)
+regr.fit(var_explicativa, var_objetivo)
+
+
+
+
+#Veamos cuales son los coeficientes Beta 1 y Beta 2
+regr.coef_
+
+
+
+#Y ahora cual es Beta 0
+regr.intercept_
+
+
+
+
+#Veamos que resultados da el modelo
+prediccion_prec = regr.predict(var_explicativa)
+prediccion_prec
+
+
+
+#Calculemos el error cuadrado medio
+sce = 0
+for i in range(0, precio.size):
+    sce += np.power(precio[i] - prediccion_precios[i], 2)
+mse = sce / precio.size
+mse
+
+
+
+mean_squared_error(var_objetivo, prediccion_precios)
+
+
+
+#Cuanto es el R2
+r2_score(var_objetivo, prediccion_precios)
+
+
+
+
+<h4>Calculemos $R^{2}$ Ajustado</h4>
+
+Segun lo visto en clase, definimos a $R^{2}$ como:
+
+$R^{2} = 1 - \frac{RSS}{TSS}$
+
+donde RSS es Residual Sum of Squares y se calcula como:
+
+$RSS = \Sigma(y_{i} - Y_{i})^{2}$
+
+y TSS:
+
+$TSS = \Sigma(y_{i} - y_{med-i})^{2}$
+
+Para $R^{2}_{ajus}$ queremos penalizar la incorporacion de nuevas variables:
+
+$R^{2}_{ajus} = 1 - \frac{RSS / (n - d -1)}{TSS / (n-1)}$
+
+remplazando terminos:
+
+$R^{2}_{ajus} = 1 - (1 - R^{2})(\frac{n-1}{n-d-1})$
+
+
+
+
+
+
+#En base a lo definido anteriormente calculemos R2 ajustado
+#N es el numero de ocurrencias
+n = var_objetivo.size
+#d es el numero de variables explicativas
+d = var_explicativas.columns.size
+print('n: ', n, 'd: ', d)
+
+
+
+
+#Planteamos nuestra formula y veamos el resultado
+r2_ajust = 1 - (1 - r2) * ((n - 1) / (n - d - 1))
+print('R2 Ajustado:', round(r2_ajust, 3))
+print('R2: ', round(r2, 3))
+
+
+
+</pre></td>
+  </tr>
+ 		
+  <tr>
+    <th>Company 2 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 3 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 4 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 5 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 6 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 7 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 8 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 9 ML</th>
+    
+  </tr>
+  <tr>
+    <th>Company 10 ML</th>
+    
+  </tr>		 
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
   <tr>
     <td></td>
   </tr>
