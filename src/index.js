@@ -22,6 +22,10 @@ app.use('/api',fotoRoutes);
 app.get('/',(req,res)=>{
     res.send('welcome to my api')
 })
+//deep learning
+app.get('/deep-learning', function(req, res) {
+    res.sendFile('test.html', {root: __dirname })
+});
 
 //mongodb connection
 mongoose
