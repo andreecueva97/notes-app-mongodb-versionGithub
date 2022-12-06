@@ -1258,6 +1258,290 @@ plt.show()
     <th>Company 4 ML</th>
     
   </tr>
+practica 4 
+<td><pre>
+
+<h4> Regresion Logística y kNN.</h4>
+
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn import neighbors
+
+
+
+
+
+
+# Cargamos la data
+df = pd.read_csv('Churn_Modelling.csv')
+df.head()
+
+
+
+
+
+
+# Notemos que hay variables que no aportan al modelo como RowNumber, CustomerId y Surname
+df = df.drop(['RowNumber', 'CustomerId', 'Surname', 'Geography'], axis=1)
+df.head()
+
+
+
+
+
+# Tenemos variables que debemos cambiar su forma de representacion como Geography y Gender
+# Creamos los valores para geography
+#geography = pd.factorize(df['Geography'])
+#geography
+
+
+
+
+
+
+
+# Obtenemos el indice donde se encontraba Geogrpahy
+index = df.columns.get_loc('Geography')
+# Eliminamos la columna
+df = df.drop('Geography', axis=1)
+# Insertamos la nueva
+df.insert(index, 'Geography', geography[0])
+df.head()
+
+
+
+
+
+
+
+# Creamos los valores para Gender
+gender = pd.factorize(df['Gender'])
+# Obtenemos el indice donde se encontraba Gender
+index = df.columns.get_loc('Gender')
+# Eliminamos la columna
+df = df.drop('Gender', axis=1)
+# Insertamos la nueva
+df.insert(index, 'Gender', gender[0])
+df.head()
+
+
+
+
+
+
+
+
+#Veamos como influye el credit score y la edad en la decision de abandonar el producto
+x = df['Age']
+y = df['CreditScore']
+e = df['Exited']
+plt.scatter(x,y,c=e)
+plt.colorbar()
+plt.show()
+
+
+
+
+
+
+
+
+#Veamos como influye la edad y la cantidad de productos en la decision de abandonar el producto
+x = df['NumOfProducts']
+y = df['Age']
+e = df['Exited']
+plt.scatter(x,y,c=e)
+plt.colorbar()
+plt.show()
+
+
+
+
+
+
+
+<h5>Regresión Logística</h5>
+
+Vamos a usar la libreria SKLearn para generar y entrenar nuestro modelo. Luego graficaremos el espacio de soluciones
+
+
+
+
+
+
+
+
+y = df['Exited']
+x = df.drop('Exited', axis=1)
+rlog = LogisticRegression().fit(x, y)
+# Classes nos devuelve que tipos de etiquetas usa el clasificador
+rlog.classes_
+
+
+
+
+
+
+
+
+# Veamos los coeficientes 
+rlog.coef_
+
+
+
+
+
+
+# Prediccion para cada input
+rlog.predict_proba(x)
+
+
+
+
+# Y si queremos cambiar el threshold? Default =0.5
+x
+
+
+
+
+
+# Calculemos el error
+y = df['Exited']
+x = df.drop('Exited', axis=1)
+difference = y - rlog.predict(x)
+count = 0
+for i in range(0, difference.size):
+    # aquellas que calculo bien
+    if difference[i] == 0:
+        count +=1
+accuracy = count/difference.size
+accuracy
+
+
+
+
+
+
+# Aqui calculado por ela libreria
+rlog.score(x, y)
+
+
+
+
+
+
+
+# Grafiquemos nuestra solucion
+x_values = df['NumOfProducts']
+y = df['Age']
+e = rlog.predict(x)
+plt.scatter(x_value,y,c=e)
+plt.colorbar()
+
+plt.xlabel('NumOfProducts')
+plt.ylabel('Age')
+plt.show()
+
+
+
+
+
+#Veamos como influye el credit score y la edad en la decision de abandonar el producto
+X = df['Age']
+y = df['CreditScore']
+e = rlog.predict(x)
+plt.scatter(X,y,c=e)
+plt.colorbar()
+plt.xlabel('Age')
+plt.ylabel('CreditScore')
+plt.show()
+
+
+
+
+
+
+
+
+#Veamos como influye el credit score y la edad en la decision de abandonar el producto
+x_value = df['Tenure']
+y = df['CreditScore']
+e = rlog.predict(x)
+plt.scatter(x_value,y,c=e)
+plt.colorbar()
+plt.xlabel('Tenure')
+plt.ylabel('CreditScore')
+plt.show()
+
+
+
+
+
+
+<h5>K-Nearest Neighbours</h5>
+
+
+
+
+
+
+
+y = df['Exited']
+x = df.drop('Exited', axis=1)
+k = 5
+# Existe el modo Uniform (cada distancia tiene igual importancia) o Distance (mas peso a los mas
+# cercanos)
+knn = neighbors.KNeighborsClassifier(k, weights='uniform').fit(x, y)
+
+
+
+
+
+
+knn.get_params()
+
+
+
+
+
+
+
+
+knn.score(x,y)
+
+
+
+
+
+
+
+
+
+#Veamos como influye el credit score y la edad en la decision de abandonar el producto
+X = df['Age']
+y = df['CreditScore']
+e = knn.predict(x)
+plt.scatter(X,y,c=e)
+plt.colorbar()
+plt.xlabel('Age')
+plt.ylabel('CreditScore')
+plt.show()
+
+
+
+
+
+
+
+
+</td></pre>
+
   <tr>
     <th>Company 5 ML</th>
     
