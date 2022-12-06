@@ -942,6 +942,318 @@ r2_variation(vars_size, r2_adj, 'Backward Stepwise Selection with p-values', 'k'
     <th>Company 3 ML</th>
     
   </tr>
+practica 3
+<td><pre>
+
+<h4>Regresion No Lineal: Polinómica y Logarítmica.</h4>
+
+valernos de ajustes lineales para tendencias no lineales. Ademas aplicaremos ANOVA para la seleccion de variables
+
+
+
+
+
+
+<h5>Regresion No Lineal: Polinomial</h5>
+    Veamos como mejorar nuestro R2 del modelo de Regresion Lineal de la practica 1
+	
+
+
+
+
+
+import pandas as pd
+import statsmodels.api as sm
+from sklearn.preprocessing import PolynomialFeatures
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+
+
+
+
+
+
+
+
+
+#Traemos el dataset de Boston y armaremos nuestro modelo con todas las variables
+boston = pd.read_csv('boston.csv')
+var_explicativas = boston[['LSTAT']]
+var_objetivo = boston[['MEDV']]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var_explicativas
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Creamos los valores del polinomio a partir de X
+polynomial_features = PolynomialFeatures(degree=2)
+xp = polynomial_features.fit_transform(var_explicativas)
+#Devuelve X^0, X^1, X^2
+print(xp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Creamos y entrenamos a nuestro modelo.
+model = sm.OLS(var_objetivo, xp)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Predizcamos los valores de precio
+precios = regr.predict(xp)
+
+
+
+
+
+
+
+
+
+plt.scatter(var_explicativas, var_objetivo)
+plt.scatter(var_explicativas, precios, color='red')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Comparemos como cambia a medida que aumenta el grado del polinomio
+for i in range(1, 10):
+    # Obtengo los valores del polinomio a partir de x
+    polynomial_features=PolynomialFeatures(degree=i)
+    xp = polynomial_features.fit_transform(var_explicativas)
+    # Entreno el modelo
+    model = sm.OLS(var_objetivo, xp)
+    regr = model.fit()
+    # Grafico la dispersion de puntos
+    plt.scatter(var_explicativas, var_objetivo)
+    # Creo una columna con valores X para realizar la prediccion
+    x = np.arange(30, step=0.1)
+    x = x[:,None]
+    xp = polynomial_features.fit_transform(x)
+    # Obtengo los valores y a a partir de los x 
+    y = regr.predict(xp)
+    # Grafico x vs y, para ver la grafica del polinomio
+    plt.plot(x, y, color='red')
+    # Añado valores
+    plt.xlabel('LSTAT')
+    plt.ylabel('MEDV')
+    plt.title('Polinomio de grado ' + str(i))
+    plt.text(30, 40, 'R2 adj: ' + str(round(regr.rsquared_adj,3)))
+    plt.show()
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+# El que mejor ajusta en este caso es un polinomio de grado 3
+polynomial_features=PolynomialFeatures(degree=3)
+xp = polynomial_features.fit_transform(var_explicativas)
+# Entreno el modelo
+model = sm.OLS(var_objetivo, xp)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+
+<h5>Regresio No Lineal: Logaritmica</h5>
+
+
+
+
+
+
+
+Prueben con esta herramienta https://miniwebtool.com/es/log-base-10-calculator/ que se calcula apropiadamente 
+
+
+
+
+
+
+
+
+# Seteamos las variables y las observemos
+x_log = np.log10(var_explicativas)
+y_log = np.log10(var_objetivo)
+plt.scatter(x_log, y_log)
+plt.xlabel('Log(LSTAT)')
+plt.ylabel('Log(MEDV)')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+# Entrenamos el modelo
+x_log = sm.add_constant(x_log)
+model = sm.OLS(y_log, x_log)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+
+
+
+
+# Grafiquemos nuestro modelo
+y_log_pred = regr.predict(x_log)
+plt.scatter(x_log['LSTAT'], y_log)
+plt.plot(x_log['LSTAT'], y_log_pred, 'r')
+plt.xlabel('Log(LSTAT)')
+plt.ylabel('Log(MEDV)')
+plt.text(1.3, 1.6, 'R2 ADJ: ' + str(round(regr.rsquared_adj,3)))
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+# Encontramos los beta
+beta_0 = regr.params[0]
+beta_1 = regr.params[1]
+# Transformamos los valores
+a = np.power(10, beta_0)
+# Armamos los valores del modelo
+x = np.arange(start=2, stop=37, step=0.1)
+x = x[:,None]
+y_model = a * np.power(x, beta_1)
+print(x.size, y_model.size)
+
+
+
+
+
+
+
+
+
+
+
+
+# Visualicemos
+plt.scatter(var_explicativas, var_objetivo)
+plt.plot(x, y_model, 'r')
+plt.xlabel('LSTAT')
+plt.ylabel('MEDV')
+plt.text(30, 40, 'R2 ADJ: ' + str(round(regr.rsquared_adj, 3)))
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+</pre></td>
   <tr>
     <th>Company 4 ML</th>
     
