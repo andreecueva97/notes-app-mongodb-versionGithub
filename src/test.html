@@ -548,6 +548,395 @@ print('R2: ', round(r2, 3))
     <th>Company 2 ML</th>
     
   </tr>
+practica 2
+<td><pre>
+<h4>técnicas de selección discutidas la última clase: Forward Stepwise Selection, Backward Stepwise Selection y Backward Stepwise Selection with p-values.
+</h4>
+
+
+#Importamos las librerias que vamos a usar hoy
+import pandas as pd
+import numpy as np
+from sklearn import linear_model
+from sklearn.metrics import r2_score
+import statsmodels.api as sm
+import operator
+import matplotlib.pyplot as plt
+
+
+
+
+
+#Traemos el dataset de Boston y armaremos nuestro modelo con todas las variables
+boston = pd.read_csv('boston.csv')
+var_explicativas = boston.drop('MEDV', 1)
+var_objetivo = boston[['MEDV']]
+
+
+
+
+
+<h4>Una nueva libreria: StatsModels</h4>
+
+Esta libreria permite hacer estimaciones para diferentes modelos estadísticos, además de permitir hacer pruebas estadísticas y exploración de data https://www.statsmodels.org/stable/index.html.
+
+Respecto a SKLearn, para Regresión Lineal las diferencias no son significativas. Podemos leer este artículo donde se comparan ambos módulos: https://becominghuman.ai/stats-models-vs-sklearn-for-linear-regression-f19df95ad99b 
+
+¿Por que lo utilizaremos? porque nos brinda muchos detalles estadisticos que SKLearn no.
+
+
+
+
+
+
+
+#En StatsModels debemos agregar nosotros mismo la constante para el armado de nuestro modelo.
+var_explicativas = sm.add_constant(var_explicativas)
+var_explicativas.head()
+
+
+
+
+
+#Definimos nuestro modelo, OLS significa Ordinary Least Squares. Esto indica la forma en la que
+#se calcularan los parametros
+model = sm.OLS(var_objetivo, var_explicativas)
+
+
+
+
+
+#Entrenamos el modelo (notemos las diferencias con sklearn)
+regr = model.fit()
+
+
+
+
+
+#Veamos todos los datos que nos entrega StatsModels
+print(regr.summary())
+
+
+
+
+
+#Para acceder al R2 y R2 Ajustado
+r2 = regr.rsquared
+r2_adj = regr.rsquared_adj
+print('R2: ', round(r2, 3))
+print('R2 Ajustado:', round(r2_adj, 3))
+
+
+
+
+
+
+
+#Y lo mas interesante: Los p-values
+p_values = regr.pvalues
+print(regr.pvalues)
+
+
+
+
+
+
+#Cuales son mayores a 0.05
+print("Variables which p value is > 0.05:")
+for index, value in p_values.items():
+    if value > 0.05:
+        print(index)
+		
+		
+		
+		
+
+
+#Ordenemoslos de mayor a menor
+regr.pvalues.sort_values(ascending=False)
+
+
+
+
+
+<h4>Forward Stepwise Selection</h4>
+
+Partimos de un modelo sin variables predictoras.
+Luego comenzamos a agregar de a 1 variable, eligiendo en cada ronda aquel que tenga mayor R2
+A medida que vamos conformando nuestros modelos, almacenamos el R2 ajustado
+Terminando la iteracion, graficamos los R2 ajustados y seleccionamos el mejor modelo.
+
+
+
+
+
+
+
+
+#Traemos el dataset de Boston y armaremos nuestro modelo con todas las variables
+boston = pd.read_csv('boston.csv')
+var_explicativas = boston.drop('MEDV', 1)
+var_explicativas = sm.add_constant(var_explicativas)
+var_objetivo = boston[['MEDV']]
+
+
+
+
+
+
+# Seteamos las condiciones iniciales necesarias
+variables = ['const']
+iterate_columns = var_explicativas.columns.drop('const',1)
+r2_adj = []
+vars_size = iterate_columns.size
+var_model = {}
+# Iteramos k veces, siendo k la cantidad de variables
+for k in range(0, vars_size):
+    # Acumulamos los valores de R2 para cada variable en los modelos que armaremos
+    r2 = {}
+    # Iteramos sobre todas las variables disponibles para la ronda
+    for var in iterate_columns:
+        # Fijamos que variables seran las que definiran nuestro modelo
+        var_explicativa = var_explicativas[variables + [var]]
+        model = sm.OLS(var_objetivo, var_explicativa)
+        regr = model.fit()
+        # Almacenamos el R2 para cada set de variables que se prueba
+        r2[var] = regr.rsquared_adj
+    # Seleccionamos aquella con mayor R2
+    var_max_r2 = max(r2.items(), key=operator.itemgetter(1))[0]
+    # Almacenamos las variables que describen a ese modelo
+    var_model[k] = var_max_r2
+    # Almacenamos el valor de R2
+    r2_adj.append(r2[var_max_r2])
+    # Eliminamos la variable para que deje de estar en consideracion en el ciclo siguiente
+    iterate_columns = iterate_columns.drop(var_max_r2,1)
+    # Agregamos la variable seleccionada en esta vuelta para que la cuente en el modelo siguiente
+    variables.append(var_max_r2)
+#Seteamos el valor de la ronda k donde R2 es maximo
+r2_max_index = r2_adj.index(max(r2_adj))
+
+
+
+
+
+
+
+
+def r2_variation(vars_size, r2_adj, title, x_label, y_label):
+    """
+    Plot the scatter and the curve that shows how R2 value vary over
+    every iteration. A title and labels for the graph must be included.
+    Also, highlight the point where there is a maximum R2 value. Add information
+    about that point. The amount of independent variables is given.
+    """
+    # Grafiquemos la solucion
+    # Los valores para señalar cada iteracion
+    x = np.arange(vars_size)
+    # El punto donde R2 es maximo
+    r2_max_x = r2_adj.index(max(r2_adj))
+    r2_max_y = max(r2_adj)
+    # Titulo de nuestro grafico y nombre de los ejes
+    plt.title(title, loc = 'left')
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    # Grafiquemos la recta con la variacion del R2 en cada vuelta
+    plt.plot(x, r2_adj)
+    # Grafiquemos dispersion de puntos de X vs R2 ajustado
+    plt.scatter(x, r2_adj)
+    # Grafiquemos el punto donde R2 es maximo y añadamos su valor en el grafico
+    plt.scatter(r2_max_x, r2_max_y, marker='*', s=100, color='red')
+    plt.text(r2_max_x * (1 + 0.01), r2_max_y * (0.97)  , round(r2_max_y, 3), fontsize=12)
+    plt.text(r2_max_x * (1 + 0.01), r2_max_y * (0.95) , 'k = ' + str(r2_max_x), fontsize=12)
+    plt.show()
+	
+	
+	
+	
+	
+
+
+
+
+r2_variation(vars_size, r2_adj, 'Forward Stepwise Selection', 'k', 'R2')
+
+
+
+
+
+
+var_model
+
+
+
+
+
+
+
+# El modelo definitivo
+variables = []
+i = 0
+while i <= r2_max_index:
+    variables.append(var_model[i])
+    i += 1
+var_explicativa = var_explicativas[variables]
+var_explicativa = sm.add_constant(var_explicativa)
+model = sm.OLS(var_objetivo, var_explicativa)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+<h4>Backward Stepwise Selection</h4>
+
+Partimos de un modelo definido por todas variables predictoras.
+Luego comenzamos a eliminar de a 1 variable, eligiendo en cada ronda aquel que tenga mayor R2
+A medida que vamos conformando nuestros modelos, almacenamos el R2 ajustado
+Terminando la iteracion, graficamos los R2 ajustados y seleccionamos el mejor modelo.
+
+
+
+
+
+
+boston = pd.read_csv('boston.csv')
+var_explicativas = boston.drop('MEDV', 1)
+var_explicativas = sm.add_constant(var_explicativas)
+var_objetivo = boston[['MEDV']]
+
+
+
+
+# Seteamos las condiciones iniciales necesarias
+variables = var_explicativas.columns
+iterate_columns = variables.drop('const', 1)
+vars_size = iterate_columns.size
+r2_adj = []
+var_model = {}
+# Iteramos k veces, siendo k la cantidad de variables
+for k in range(0, vars_size):
+    # Acumulamos los valores de R2 para cada variable en los modelos que armaremos
+    r2 = {}
+    # Indice para insertar las variables temporalmente removidas en su lugar
+    i = 1
+    # Iteramos sobre todas las variables disponibles para la ronda
+    for var in iterate_columns:
+        #Eliminamos la variable para probar
+        variables = variables.drop(var, 1)
+        # Fijamos que variables seran las que definiran nuestro modelo
+        var_explicativa = var_explicativas[variables]
+        # Insertamos nuevamente la variable que sacamos en el lugar que estaba para la prox ronda
+        variables = variables.insert(i, var)
+        # Entrenamos el modelo
+        model = sm.OLS(var_objetivo, var_explicativa)
+        regr = model.fit()
+        # Almacenamos el R2 para cada set de variables que se prueba
+        r2[var] = regr.rsquared_adj
+        # Actualizador de indice
+        i += 1
+    # Seleccionamos aquella con mayor R2
+    var_max_r2 = max(r2.items(), key=operator.itemgetter(1))[0]
+    # Almacenamos el valor de R2
+    r2_adj.append(r2[var_max_r2])
+    # Almacenamos las variables que describen a ese modelo
+    var_model[k] = var_max_r2
+    # No itera mas sobre esa variable tampoco
+    iterate_columns = iterate_columns.drop(var_max_r2, 1)
+    # Dejamos de considerar como una variable posible para definir al modelo
+    variables = variables.drop(var_max_r2, 1)
+#Seteamos el valor de la ronda k donde R2 es maximo
+r2_max = r2_adj.index(max(r2_adj))
+
+
+
+
+
+r2_variation(vars_size, r2_adj, 'Backward Stepwise Selection', 'k', 'R2')
+
+
+
+# El modelo definitivo
+variables = var_explicativas.columns
+i = 0
+while i <= r2_max:
+    variables = variables.drop(var_model[i], 1)
+    i += 1
+var_explicativa = var_explicativas[variables]
+var_explicativa = sm.add_constant(var_explicativa)
+model = sm.OLS(var_objetivo, var_explicativa)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+
+<h4>Backward Stepwise Selection with P-Values</h4>
+
+Partimos de un modelo definido por todas variables predictoras.
+Luego eliminamos, en cada vuelta, a la variable con mayor P-Value
+A medida que vamos conformando nuestros modelos, almacenamos el R2 ajustado
+Terminando la iteracion, graficamos los R2 ajustados y seleccionamos el mejor modelo.
+
+
+
+
+
+boston = pd.read_csv('boston.csv')
+var_explicativas = boston.drop('MEDV', 1)
+var_explicativas = sm.add_constant(var_explicativas)
+var_objetivo = boston[['MEDV']]
+
+
+
+
+
+
+variables = var_explicativas.columns
+r2_adj = []
+vars_out = []
+for k in range(0, vars_size):
+    var_explicativa = var_explicativas[variables]
+    # Entrenamos el modelo
+    model = sm.OLS(var_objetivo, var_explicativa)
+    regr = model.fit()
+    # Almacenamos el valor de R2
+    r2_adj.append(regr.rsquared_adj)
+    # Obtenemos los p-values sin considerar la constante
+    p_values = regr.pvalues.drop('const')
+    print(regr.pvalues)
+    pvalue_index = p_values.argmax()
+    pvalue_var = p_values.keys()[pvalue_index]
+    # Eliminamos la variable cuyo p-value es el mas grande
+    variables = variables.drop(pvalue_var)
+    # Almacenamos la variable que queda fuera en cada ronda
+    vars_out.append(pvalue_var)
+	
+	
+	
+	
+
+
+
+vars_out
+
+
+
+
+
+r2_variation(vars_size, r2_adj, 'Backward Stepwise Selection with p-values', 'k', 'R2')
+
+
+
+
+
+
+
+<td></pre>
   <tr>
     <th>Company 3 ML</th>
     
