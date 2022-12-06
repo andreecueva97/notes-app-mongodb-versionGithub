@@ -1844,6 +1844,205 @@ mse
     <th>Company 6 ML</th>
     
   </tr>
+practica 6
+<td><pre>
+
+
+import pandas as pd
+
+
+
+
+
+# PREPARAMOS LA DATA
+df = pd.read_csv('Churn_Modelling.csv')
+df = df.drop(['RowNumber', 'CustomerId', 'Surname', ], axis=1)
+geography = pd.factorize(df['Geography'])
+index = df.columns.get_loc('Geography')
+# Eliminamos la columna
+df = df.drop('Geography', axis=1)
+# Insertamos la nueva
+df.insert(index, 'Geography', geography[0])
+gender = pd.factorize(df['Gender'])
+# Obtenemos el indice donde se encontraba Gender
+index = df.columns.get_loc('Gender')
+# Eliminamos la columna
+df = df.drop('Gender', axis=1)
+# Insertamos la nueva
+df.insert(index, 'Gender', gender[0])
+df.to_csv('churn_cleaned.csv', index=False)
+
+
+
+
+
+
+
+
+
+
+
+
+# Entrenamos nuestro modelo
+from sklearn.linear_model import LogisticRegression
+X = df.drop(['Exited'], axis=1)
+y = df['Exited']
+model = LogisticRegression().fit(X,y)
+
+
+
+
+
+
+
+
+
+
+
+
+# Clasificamos con un umbral a determinar
+y_prob = model.predict_proba(X)
+y_pred = []
+threshold = 0.75
+for pro in y_prob:
+    if pro[1] > threshold:
+        y_pred.append(1)
+    else:
+        y_pred.append(0)
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+
+
+
+
+
+
+
+
+# Utilizamos la funcion que nos retorna la matriz de confusion
+from sklearn.metrics import confusion_matrix
+matrix = confusion_matrix(y, y_pred)
+
+tn, fp, fn, tp = confusion_matrix(y, y_pred).ravel()
+
+
+
+
+
+
+
+matrix
+
+
+
+
+
+
+
+
+
+
+print(tn)
+print(fp)
+print(fn)
+print(tp)
+
+
+
+
+
+
+
+
+
+print("       1           0")
+print("1    ",tp,"          ",fp)
+print("0    ",fn,"       ",tn)
+
+
+
+
+
+
+
+
+
+X = df[['Balance', 'HasCrCard']]
+y = df['Exited']
+
+
+
+
+
+
+
+
+
+
+from sklearn import tree
+clf = tree.DecisionTreeClassifier().fit(X,y)
+
+
+
+
+
+
+clf.score(X,y)
+
+
+
+
+
+
+
+
+pred_proba = clf.predict_proba(X)
+pred_proba
+
+
+
+
+
+
+y_pred = clf.predict(X)
+y_pred
+
+
+
+
+
+
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12,12))
+tree.plot_tree(clf, fontsize=10)
+plt.show()
+
+
+
+
+
+
+
+y = clf.predict([[152000,0]])
+y
+
+
+
+
+
+
+
+
+</pre></td>
   <tr>
     <th>Company 7 ML</th>
     
