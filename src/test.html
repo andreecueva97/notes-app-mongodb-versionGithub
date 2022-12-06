@@ -20,6 +20,23 @@
 }
 -->
   </style>
+	<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 </head>
  
 <body>
@@ -28,7 +45,7 @@
       <div id="logo">
         <div id="logo_text">
           <!-- class="logo_colour", allows you to change the colour of the text -->
-          <h1><a href="index.html">Alcaldia de<span class="logo_colour"> </span></a>San Emigdio </h1>
+          <h1><a href="index.html">Deep Learning de<span class="logo_colour"> </span></a>San Emigdio Especialista Machine learning </h1>
           <h2></h2>
         </div>
       </div>
@@ -36,7 +53,7 @@
         <div id="menu_container">
           <ul class="sf-menu" id="nav">
              <li><a href="index.html">Inicio</a></li>
-            <li><a href="valores.html">Valores Institucionales</a></li>
+            <li><a href="valores.html">Valores Marginales</a></li>
  
 			<li><a href="sanemigdio.html" class="sf-menu" id="nav">San Emigdio</a>
   <ul>
@@ -81,7 +98,7 @@
           <p class="style2">&nbsp;</p>
           <p class="style2">&nbsp;</p>
           </th>
-          <th width="453" height="652" scope="col"><h1 align="center" class="style7">Mensaje del Alcalde </h1>
+          <th width="453" height="652" scope="col"><h1 align="center" class="style7">Introduccion al Machine Learning </h1>
             <p align="justify" class="style1"><strong>Queridos Amigos: </strong><br>
             <p align="justify" class="style1">Reciban un afectuoso saludo de  parte de su servidor Javier Antonio Pérez. Para mí es un verdadero honor  presidir al Concejo Municipal del Pueblo de San Emigdio. Departamento de La  Paz, y poder trabajar para todos ustedes de la mano, persiguiendo el desarrollo  local de nuestro querido pueblo. <br>
               Siempre he considerado que  la mejor manera de tener éxito en la vida. Es por medio del dialogo, de la mano  de las personas, de escuchar a los habitantes, de pensar en el bienestar de los  demás, por esta razón mi administración municipal será bajo el mismo enfoque,  un gobierno cercano a la gente. <br>
@@ -107,9 +124,191 @@
       </table>
       <div align="justify"></div>
     </div>
+
   <footer>
     <p align="center"><img src="images/logounb.png" alt="h" width="107" height="69"> Alcalde: Javier Antonio Pérez Tel. (503)23792517 Barrio El Centro|  Alcaldia de </a>San Emigdio </a><img src="images/ku.png" alt="t" width="101" height="90"></p>
   </footer>
+	<table>
+  <tr>
+    <th>Company 1 ML</th>
+    
+  </tr>
+  <tr>
+    <td>
+	matsplot.py
+	import numpy as np
+"""
+Completar las funciones señaladas con la logica
+correspondiente segun conceptos vistos en clase 0. 
+No remover ni modifcar la constante X
+"""
+X = np.arange(10)
+
+def y_values(x, mode):
+    """
+    Given an array of X values, return the y
+    values according to the mode parameter.
+    mode can be l for a linear function y = m*x + b
+    where b = 2 and m = 3 and q for a quadratic function
+    y = x^2
+    >>> y_values(X, 'l')
+    array([ 2,  5,  8, 11, 14, 17, 20, 23, 26, 29])
+    >>> y_values(X, 'q')
+    array([ 0,  1,  4,  9, 16, 25, 36, 49, 64, 81])
+    """
+    pass
+	
+	def plot_x_y(x,y, mode):
+    """
+    Given x and y values of the same size, use matplot 'plt'
+    to plot a specific chart. This function can be solve in one line
+    """
+    pass
+	
+	if __name__ == '__main__':
+    #a sample result, try as many as you wany
+    Y = y_values(X, 'l')
+    plot_x_y(X, Y, 'r')
+    plt.show()
+
+</td>
+  
+  </tr>
+  <tr>
+    <td>
+	panda.py
+	import pandas as pd
+"""
+Completar las funciones señaladas con la logica
+correspondiente segun conceptos vistos en clase 0. 
+No modificar la constante SRC. Todas las funciones
+se resuelven en una o dos lineas de codigo
+"""
+SRC = {"Name":
+           ["Geoffrey Hinton",
+            "Michael I Jordan",
+            "Andrew Ng",
+            "Yann LeCun",
+            "Yoshua Bengio"],
+       "Age": [73, 65, 45, 61, 57],
+       "Country":
+           ["UK", "US", "UK", "FR", "FR"]}
+
+
+def set_dataframe(source):
+    """
+    From the SRC constant, create a panda data frame
+    and return it. This will be a useful helper function
+    """
+    pass
+
+
+def average_age(data_frame):
+    """
+    Given a data frame, get the average
+    age of all of the names in list
+    >>> average_age( set_dataframe(SRC) )
+    60.2
+    """
+    pass
+
+
+def people_from(a_country, data_frame):
+    """
+    Given a data frame, get all the people
+    from a given country
+    """
+    pass
+
+if __name__ == '__main__':
+    data = set_dataframe(SRC)
+    print(data)
+    print("Average Age:", average_age(data))
+    print(people_from("UK", data))
+	</td>
+   
+  </tr>
+  <tr>
+    <td>
+	warm-up.py
+"""
+Completar las siguientes funciones definidas de modo que cumplan
+con la logica solicitada. El proposito de este ejercicio es recordar
+elementos de Python (req. Informatica General). Se asignan tests previamente
+definidos (no es necesario agregar nuevos casos).
+"""
+
+
+def list_has_even_size(lst):
+    """
+    Given a list return True if its size
+    is an even number, otherwise False
+
+    >>> list_has_even_size([1, 2, 3])
+    False
+    >>> list_has_even_size(['a', 'b', 'c', 'd'])
+    True
+    >>> list_has_even_size([])
+    True
+    """
+    pass
+
+
+def sum_of_elements(lst):
+    """
+    Given a list with integer numbers
+    return the sum of all the elements.
+    >>> sum_of_elements([1, 25, 45, 30])
+    101
+    >>> sum_of_elements([5, 3, -1])
+    7
+    >>> sum_of_elements([])
+    0
+    >>> sum_of_elements([-5, -2])
+    -7
+    """
+    pass
+
+
+def remove_elements(array):
+    """
+    Given a 2d array, return an array
+    that contains only the rows that have not
+    None as an element
+    >>> remove_elements([[1, 2], [3, 4]])
+    [[1, 2], [3, 4]]
+    >>> remove_elements([[1, None], [2, 3]])
+    [[2, 3]]
+    >>> remove_elements([[1, None], [1, None]])
+    []
+    """
+    pass
+
+
+def replace_value(array):
+    """
+    Given a 2d array, replace every 'x'/'X' character
+    with an 'o'/'O' character.
+    >>> replace_value([['a', 'x'], ['o', 'b']])
+    [['a', 'o'], ['o', 'b']]
+    >>> replace_value([['a', 'b'], ['c', 'd']])
+    [['a', 'b'], ['c', 'd']]
+    >>> replace_value([['X', 'x'], ['xx', 'XX']])
+    [['O', 'o'], ['xx', 'XX']]
+    """
+    pass
+	</td>
+   
+  </tr>
+  <tr>
+    <td></td>
+    
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+
+</table>
 </div>
   <p>&nbsp;</p>
   <!-- javascript at the bottom for fast page loading -->
