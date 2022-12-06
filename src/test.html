@@ -2261,7 +2261,178 @@ y
     <th>Company 8 ML</th>
     
   </tr>
-  <tr>
+practica 8 
+<td><pre>
+
+<h4>AdaBoost y usamos libreria AdaBoostClassifier de SKLearn </h4>
+
+
+
+ anexo de Excel como es el calculo de los disitntos parametros necesarios para generar los clasificadores débiles.
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+# librerias a utilizar
+import pandas as pd
+from sklearn.ensemble import AdaBoostClassifier
+import matplotlib.pyplot as plt
+
+
+
+
+
+
+df = pd.read_csv('churn_cleaned.csv')
+df = df[['CreditScore', 'Balance', 'Exited']]
+df
+
+
+
+
+
+
+
+
+
+plt.scatter(df['CreditScore'], df['Balance'], c=df['Exited'])
+plt.xlabel('Balance')
+plt.ylabel('Credit Score')
+plt.text(900, 5, "Yellow: 1, Violet: 0")
+plt.show()
+
+
+
+
+
+
+
+clf = AdaBoostClassifier(n_estimators=5, random_state=0)
+
+
+
+
+
+
+
+
+
+
+
+X = df[['CreditScore', 'Balance']]
+y = df[['Exited']]
+clf.fit(X, y)
+
+
+
+
+
+
+
+
+
+
+
+# Que usamos para las estimaciones ?
+clf.base_estimator_
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Cada arbol
+clf.estimators_
+
+
+
+
+
+
+
+
+
+
+
+
+
+from sklearn import tree
+d_tree = tree.DecisionTreeClassifier(max_depth=1, random_state=1537364731).fit(X,y)
+import matplotlib.pyplot as plt
+plt.figure(figsize=(6,6))
+tree.plot_tree(d_tree, fontsize=10)
+plt.show()
+
+
+
+
+
+
+
+
+# forma de la variable clasificatoria
+clf.classes_
+
+
+
+
+
+
+
+# Suma de Alpha * valor
+clf.decision_function([[619, 0]])
+
+
+
+
+
+
+
+
+
+# Predicion -acierta
+clf.predict([[619, 0]])
+
+
+
+
+
+
+
+# Suma de Alpha * Valor
+clf.decision_function([[822, 0]])
+
+
+
+
+
+
+# Predicion -acierta
+clf.predict([[822, 0]])
+
+
+
+
+
+
+
+clf.score(X, y)
+
+
+</pre></td>
+<tr>
     <th>Company 9 ML</th>
     
   </tr>
