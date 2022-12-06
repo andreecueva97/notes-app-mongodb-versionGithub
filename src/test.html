@@ -2047,6 +2047,216 @@ y
     <th>Company 7 ML</th>
     
   </tr>
+practica 7
+<td><pre>
+
+
+<h4>BAGGING: Boostrap Aggregation</h4>
+
+
+
+
+
+
+
+
+# librerias a utilizar
+import pandas as pd
+from sklearn import tree
+
+
+
+
+
+
+
+
+df = pd.read_csv('churn_cleaned.csv')
+df
+
+
+
+
+
+
+
+
+def boostrap_sample(df, n, p):
+    boostrap = []
+    for b in range(0, n):
+        # replace True permite que haya items que se repitan en el df
+        boostrap.append(df.sample(frac=p, replace=True))
+    return boostrap
+	
+	
+	
+	
+	
+	
+	
+
+b_sample = boostrap_sample(df, 3, 0.5)
+b_sample
+
+
+
+
+
+
+
+
+
+
+def voting(lst):
+    one = lst.count(1)
+    zero = lst.count(0)
+    if one > zero:
+        return 1
+    return 0
+	
+	
+	
+	
+	
+
+
+
+def bagging_predict(b_sample, x, target):
+    # almacenar predicciones
+    pred = []
+    for b in range(0, len(b_sample)):
+        # create X and y value
+        X = b_sample[b].drop([target], axis=1)
+        y = b_sample[b][target]
+        # train decision tree
+        clf = tree.DecisionTreeClassifier().fit(X,y)
+        # append the prediction in the array
+        pred.append(clf.predict(x)[0])
+    return voting(pred)
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+def count_hits(values, df, target):
+    count = 0
+    for key in values:
+        values[key] = voting(values[key])
+        if key in df[target].index.values and values[key] == df[target][key]:
+            count += 1
+    return count
+	
+	
+	
+	
+
+
+
+def bagging_score(b_sample, df, target):
+    # almacenar predicciones
+    pred = []
+    dfs = {}
+    for b in range(0, len(b_sample)):
+        df_test = df.drop(b_sample[b].index.values)
+        # create X and y value
+        X = b_sample[b].drop([target], axis=1)
+        y = b_sample[b][target]
+        # create X test
+        X_test = df_test.drop([target], axis=1)
+        # train decision tree
+        clf = tree.DecisionTreeClassifier().fit(X,y)
+        pred = clf.predict(X_test)
+        # iterar sobre las predicciones y agregarlas al diccionario
+        # si ya esta el indice, concatenar
+        # si no, agregar
+        for i in range(0, len(pred)):
+            if X_test.index.values[i] in dfs:
+                dfs[X_test.index.values[i]].append(pred[i])
+            else:
+                dfs[X_test.index.values[i]] = [pred[i]]
+    #debemos aplicar voting sobre cada key del arreglo
+    score = count_hits(dfs, df, target)
+    return score / len(dfs)
+	
+	
+
+
+
+
+
+
+
+# create 100 boostrap samples with 50% original size each one
+b_sample = boostrap_sample(df, 3, 0.5)
+
+
+
+
+
+
+
+
+x = [[500, 0, 1, 40, 1, 5000, 1, 1, 0, 100000]]
+# realizaremos 100 muestras boostrap y cada muestra sera del 50% del tamaño del df original
+pred = bagging_predict(b_sample, x, 'Exited')
+print("CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, isActiveMember, EstimatedSalary")
+print(x[0])
+if pred == 1:
+    print("We predict an EXIT of the client")
+else:
+    print("We predict client will REMAIN in the bank")
+	
+	
+	
+	
+	
+	
+	
+
+
+bagging_score(b_sample, df, 'Exited')
+
+
+
+
+
+
+
+
+df
+
+
+
+
+
+
+
+
+
+
+
+
+from sklearn.ensemble import RandomForestClassifier
+X = df.drop(['Exited'], axis=1)
+y = df['Exited']
+random_forest = RandomForestClassifier(n_estimators = 3, bootstrap= True).fit(X, y)
+y = random_forest.predict_proba([[500, 0, 1, 40, 1, 5000, 1, 1, 0, 100000]])
+y
+
+
+
+
+
+
+
+
+</pre></td>
   <tr>
     <th>Company 8 ML</th>
     
