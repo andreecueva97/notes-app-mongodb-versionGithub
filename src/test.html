@@ -3000,8 +3000,465 @@ y_preds
 <tr>
     <th>Company 11   RESUMEN GENERAL - ALGORITMOS</th>
     
-  </tr>	  
-		  
+  </tr>	 
+<td><pre>
+
+
+<h1> Algoritmos manuales para recordar </h1>
+
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm 
+import operator
+from sklearn.linear_model import LogisticRegression
+from sklearn import linear_model
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn import neighbors
+from sklearn import tree
+from sklearn.metrics import confusion_matrix
+#LAS DUDOSAS QUE PROBABLEMENTE NO SE PERMITAN EN EL EXAMEN PERO ESTAN VISTAS ACA
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
+
+
+
+
+
+
+
+<h2>Algoritmo de MSE</h2>
+
+
+
+
+def mean_squared_error_manual(y_reales, y_predicciones):
+    reales = np.array(y_reales)
+    predicciones = np.array(y_predicciones)
+    diferencia = np.subtract(reales, predicciones)
+    cuadrados = np.power(diferencia, 2)
+    return cuadrados.mean()
+	
+	
+
+
+
+<h2> Setup para algoritmos de seleccion como forward, backward y backward with p-values</h2>
+
+
+
+
+
+dataframe = pd.read_csv('boston.csv')
+variables_explicativas = dataframe.drop('MEDV', axis=1)
+variable_objetivo = dataframe[['MEDV']]
+variables_explicativas = sm.add_constant(variables_explicativas)
+print(variables_explicativas.columns)
+
+
+
+
+
+<h2>Algoritmo de Forward Stepwise Selection</h2>
+
+
+
+
+def forward_stepwise_selection(variables_explicativas, variable_objetivo):
+    variables = ['const']
+    r2_adj = []
+    var_model = {}
+    iterate_columns = variables_explicativas.columns.drop('const', 1)
+    vars_size = iterate_columns.size
+    for k in range(0, vars_size):
+        r2 = {}
+        for var in iterate_columns:
+            variable_explicativa = variables_explicativas[variables + [var]]
+            model = sm.OLS(variable_objetivo, variable_explicativa)
+            regr = model.fit()
+            r2[var] = regr.rsquared_adj
+        best_var = max(r2.items(), key=operator.itemgetter(1))[0]
+        r2_adj.append(r2[best_var])
+        variables.append(best_var)
+        iterate_columns = iterate_columns.drop(best_var, 1)
+        var_model[k] = best_var
+    r2_max_index = r2_adj.index(max(r2_adj))
+    return r2_max_index, var_model
+
+r2_max_index, var_model = forward_stepwise_selection(variables_explicativas, variable_objetivo)
+i = 0
+variables = []
+while i <= r2_max_index:
+    variables.append(var_model[i])
+    i += 1
+variables_explicativa = variables_explicativas[variables]
+sm.add_constant(variables_explicativa)
+model = sm.OLS(variable_objetivo, variables_explicativa)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+
+
+
+<h2>Algoritmo de Backward Stepwise Selection</h2>
+
+
+
+
+
+def bacward_stepwise_selection(variables_explicativas, variable_objetivo):
+    variables = variables_explicativas.columns
+    iterate_columns = variables.drop('const', 1)
+    vars_size = iterate_columns.size
+    r2_adj = []
+    var_model = {}
+    for k in range(0, vars_size):
+        r2 = {}
+        i = 1
+        for var in iterate_columns:
+            variables = variables.drop(var, 1)
+            variable_explicativa = variables_explicativas[variables]
+            variables = variables.insert(i, var)
+            model = sm.OLS(variable_objetivo, variable_explicativa)
+            regr = model.fit()
+            r2[var] = regr.rsquared_adj
+            i += 1
+        r2_max_var = max(r2.items(), key=operator.itemgetter(1))[0]
+        r2_adj.append(r2[r2_max_var])
+        variables = variables.drop(r2_max_var, 1)
+        var_model[k] = r2_max_var
+        iterate_columns = iterate_columns.drop(r2_max_var, 1)
+    r2_max_index = r2_adj.index(max(r2_adj))
+    return r2_max_index, var_model
+
+r2_max_index, var_model = bacward_stepwise_selection(variables_explicativas, variable_objetivo)
+i = 0
+variables = variables_explicativas.columns
+while i <= r2_max_index:
+    variables = variables.drop(var_model[i], 1)
+    i += 1
+variables_explicativa = variables_explicativas[variables]
+sm.add_constant(variables_explicativa)
+model = sm.OLS(variable_objetivo, variables_explicativa)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+
+
+
+
+<h2> Algoritmo de Seleccion Backward Stepwise con p-values</h2>
+
+
+
+
+
+def bacward_stepwise_selection_pvalues(variables_explicativas, variable_objetivo):
+    variables = variables_explicativas.columns
+    r2_adj = []
+    var_model = {}
+    vars_size = variables.drop('const', 1).size
+    for k in range(0, vars_size):
+        variable_explicativa = variables_explicativas[variables]
+        model = sm.OLS(variable_objetivo, variable_explicativa)
+        regr = model.fit()
+        p_values = regr.pvalues
+        p_values = p_values.drop('const')
+        p_value_index = p_values.argmax()
+        p_value_var = p_values.keys()[p_value_index]
+        variables = variables.drop(p_value_var, 1)
+        r2_adj.append(regr.rsquared_adj)
+        var_model[k] = p_value_var
+    r2_max_index = r2_adj.index(max(r2_adj))
+    return r2_max_index, var_model
+
+r2_max_index, var_model = bacward_stepwise_selection_pvalues(variables_explicativas, variable_objetivo)
+i = 0
+variables = variables_explicativas.columns
+while i <= r2_max_index:
+    variables = variables.drop(var_model[i], 1)
+    i += 1
+variables_explicativa = variables_explicativas[variables]
+sm.add_constant(variables_explicativa)
+model = sm.OLS(variable_objetivo, variables_explicativa)
+regr = model.fit()
+print(regr.summary())
+
+
+
+
+<h2> Creacion de variables dummies </h2>
+
+
+
+
+def add_dummies(dummy_columns, dataframe):
+    for dummy in dummy_columns:
+        dataframe = add_dummy(dataframe, dummy)
+    return dataframe
+
+def add_dummy(df, dummy_column_name):
+    dummies = pd.get_dummies(df[dummy_column_name], prefix=dummy_column_name)
+    index = df.columns.get_loc(dummy_column_name)
+    df = df.drop(dummy_column_name, 1)
+    dummies_columns = list(dummies.columns)
+    for dummy in dummies_columns:
+        df.insert(index, dummy, dummies[[dummy]])
+        index += 1
+    return df
+	
+
+
+
+
+<h2> Metodo de Cross - Validation K-fold </h2>
+
+
+
+
+
+
+
+dataframe = pd.read_csv('boston.csv')
+df_random = dataframe.sample(frac=1, ignore_index=True)
+size = dataframe.shape[0]
+kfolds = 5
+
+def cross_val_score_manual_v2(dataframe, model, var_explicativas, var_objetivo, kfold=5):
+    scores = np.array([])
+    size = dataframe.shape[0]
+    interval = np.linspace(start=0, stop=size-1, num=kfold+1)
+    for i in range(kfold):
+        test = dataframe.iloc[int(interval[i]):int(interval[i+1])]
+        train = dataframe.drop(test.index)
+        X_train, Y_train = train[var_explicativas], train[var_objetivo]
+        X_test, Y_test = test[var_explicativas], test[var_objetivo]
+        regr = model.fit(X_train, Y_train)
+        Y_predict = regr.predict(X_test)
+        #scores = np.append(scores, mean_squared_error(Y_test, Y_predict))
+    scores = np.append(scores, mean_squared_error(Y_test, Y_predict))
+    print(scores)
+    return scores.mean()
+
+modelos = {}
+modelo1 = linear_model.LinearRegression()
+scores = cross_val_score_manual_v2(df_random, modelo1, ['LSTAT'], ['MEDV'], 5)
+modelos["modelo1"] = scores
+modelo2 = linear_model.LinearRegression()
+scores = cross_val_score_manual_v2(df_random, modelo2, ['RM'], ['MEDV'], 5)
+modelos["modelo2"] = scores
+modelo3 = linear_model.LinearRegression()
+scores = cross_val_score_manual_v2(df_random, modelo3, ['LSTAT', 'RM'], ['MEDV'], 5)
+modelos["modelo3"] = scores
+best_model = min(modelos.items(), key=operator.itemgetter(1))[0]
+best_model
+
+
+
+
+
+
+
+
+
+<h2> Algoritmo de Accuracy </h2>
+
+
+
+
+
+
+
+def accuracy(dataframe, target, model, threshold=0.5):
+    y = dataframe[target]
+    x = dataframe.drop(target, axis=1)
+    difference = list(y - predict_manual(model, x, threshold))
+    count = 0
+    for i in range(0, len(difference)):
+        if difference[i] == 0:
+            count += 1
+    accuracy = count / len(difference)
+    return accuracy
+
+
+
+
+
+
+
+
+<h2> Algortimos de matriz de confusion y regresion logistica </h2>
+
+
+
+
+
+
+
+
+df_categorical = pd.read_csv('Churn_Modelling.csv')
+df_categorical = df_categorical.drop(['RowNumber', 'CustomerId', 'Surname', 'Geography', 'Gender'], axis=1)
+variables_explicativas = df_categorical.drop(['Exited'], axis=1)
+variable_objetivo = df_categorical[['Exited']]
+model = LogisticRegression()
+regr = model.fit(variables_explicativas, variable_objetivo)
+
+
+
+
+
+
+
+
+
+
+def predict_manual(model, variables_explicativas, threshold=0.5):
+    y_prob = model.predict_proba(variables_explicativas)
+    y_pred = np.array([])
+    for pro in y_prob:
+        if pro[1] >= threshold:
+            y_pred = np.append(y_pred, 1)
+        else:
+            y_pred = np.append(y_pred, 0)
+    y_pred = y_pred[:,None]
+    return y_pred
+
+
+
+
+
+predicciones = predict_manual(regr, variables_explicativas, 0)
+print(mean_squared_error_manual(predicciones, variable_objetivo))
+print(mean_squared_error(predicciones, variable_objetivo))
+print(mean_squared_error(regr.predict(variables_explicativas), variable_objetivo))
+
+
+
+
+
+
+
+
+print("               PRED            ")
+print("         0              1      ")
+print("                 |             ")
+print("R  0     TN      |      FP     ")
+print("E                |             ")
+print("A  --------------|-------------")
+print("L                |             ")
+print("   1     FN      |      TP     ")
+print("                 |             ")
+
+
+
+
+
+
+
+def print_confusion_matrix(Y, Y_pred):
+    tn, fp, fn, tp = confusion_matrix(Y, Y_pred).ravel()
+    print(pd.DataFrame({"0": [tn, fn], "1": [fp, tp]}), end='\n\n')
+	
+	
+	
+	
+	
+	
+
+
+
+
+print_confusion_matrix(variable_objetivo, predicciones)
+
+
+
+
+
+
+
+
+def variacion_threshold(model, Y):
+    threshold = np.linspace(start=0, stop=0.99, num=99)
+    for thr in threshold:
+        Y_pred = predict_manual(regr, variables_explicativas, thr)
+        print(f"Threshold= {thr}\n")
+        print_confusion_matrix(Y, Y_pred)
+		
+
+
+
+
+
+
+variacion_threshold(regr, variable_objetivo)
+
+
+
+
+
+
+
+
+
+
+<h2> Calculo de mejor esperanza </h2>
+
+
+
+
+matriz_beneficio = np.array([[0,-1],[0, 99]])
+print(matriz_beneficio)
+
+
+
+
+def mejor_beneficio(model, Y, matriz_beneficio):
+    calculos = {}
+    threshold = np.linspace(start=0, stop=0.99, num=99)
+    for thr in threshold:
+        Y_pred = predict_manual(model, variables_explicativas, thr)
+        print(f"Threshold= {thr}\n")
+        print_confusion_matrix(Y, Y_pred)
+        tn, fp, fn, tp = confusion_matrix(Y, Y_pred).ravel()
+        total = tn + fp + fn + tp
+        calculo = (tp/total) * matriz_beneficio[1][1] + (fp/total) * matriz_beneficio[0][1]
+        calculos[thr] = calculo
+        print(f"Calculo={calculo}\n")
+    mejor_beneficio = max(calculos.items(), key=operator.itemgetter(1))
+    return mejor_beneficio
+
+
+
+
+
+
+matriz_beneficio = np.array([[0,-1],[0, 99]])
+mejor_beneficio = mejor_beneficio(regr, variable_objetivo, matriz_beneficio)
+
+
+
+
+
+mejor_beneficio
+
+
+</pre></td>
+<tr>
+    <th>Company 12   S</th>
+    
+  </tr>	 
+		 
 		  
 		  
 		  
